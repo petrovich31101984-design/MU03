@@ -239,7 +239,6 @@ export default function IncomeStorekeeper() {
                         >
                           📩
                         </button>
-                        <button onClick={() => handleOpenModal(records[0])} className="p-1 text-gray-600 hover:text-green-600 transition" title="Редактировать">✏️</button>
                         <button onClick={() => records.forEach(r => handleDelete(r.id))} className="p-1 text-gray-600 hover:text-red-600 transition" title="Удалить">🗑️</button>
                       </div>
                     </td>
