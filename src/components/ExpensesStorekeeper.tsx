@@ -102,6 +102,10 @@ export default function ExpensesStorekeeper() {
                         <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100">ФИО пациента:</td>
                         <td className="border border-gray-400 px-3 py-2">{formatPatientName(previewSheet.patient)}</td>
                       </tr>
+                      <tr className="bg-green-50">
+                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100">Дата рождения пациента:</td>
+                        <td className="border border-gray-400 px-3 py-2">{previewSheet.birthDate}</td>
+                      </tr>
                     </tbody>
                   </table>
 
