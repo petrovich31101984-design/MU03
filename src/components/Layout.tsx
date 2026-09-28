@@ -8,7 +8,7 @@ export default function Layout({ children, currentPage, onNavigate, onLogout }: 
     { id: 'nomenclature', label: 'Номенклатура', icon: '💊' },
     { id: 'income', label: 'Приход к сотруднику', icon: '📥' },
     { id: 'expenses', label: 'Расход у сотрудника', icon: '📤' },
-    { id: 'stock', label: 'Остатки у сотрудника', icon: '📊' },
+    { id: 'stock', label: 'Остатки у сотрудника', icon: '🧰' },
     { id: 'returns', label: 'Возвраты', icon: '↩️' },
     { id: 'chat', label: 'Сообщения', icon: '💬' },
     { id: 'report', label: 'Отчёты', icon: '📊' },
