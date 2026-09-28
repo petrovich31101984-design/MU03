@@ -11,6 +11,7 @@ export default function LayoutStorekeeper({ children, currentPage, onNavigate, o
     { id: 'returns', label: 'Возвраты', icon: '↩️' },
     { id: 'chat', label: 'Сообщения', icon: '💬' },
     { id: 'report', label: 'Отчёты', icon: '📊' },
+    { id: 'archive', label: 'Архив', icon: '📁' },
   ];
   return (
     <div className="min-h-screen bg-gray-100 flex">

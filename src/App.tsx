@@ -20,6 +20,7 @@ import StockStorekeeper from './components/StockStorekeeper';
 import ReturnsStorekeeper from './components/ReturnsStorekeeper';
 import ChatStorekeeper from './components/ChatStorekeeper';
 import ReportStorekeeper from './components/ReportStorekeeper';
+import ArchiveStorekeeper from './components/ArchiveStorekeeper';
 import RoleSelectionScreen from './components/RoleSelectionScreen';
 
 type UserRole = 'admin' | 'storekeeper' | null;
@@ -66,6 +67,7 @@ function App() {
         case 'returns': return <ReturnsStorekeeper />;
         case 'chat': return <ChatStorekeeper />;
         case 'report': return <ReportStorekeeper />;
+        case 'archive': return <ArchiveStorekeeper />;
         default: return <DashboardStorekeeper />;
       }
     }
