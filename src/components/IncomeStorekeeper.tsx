@@ -209,30 +209,43 @@ export default function IncomeStorekeeper() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {periodIncome.map(inc => { 
-                const emp = employees.find(e => e.id === inc.employeeId); 
-                if (!emp) return null; 
-                return (
-                  <tr key={inc.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-medium text-gray-800">{emp.fullName}</td>
-                    <td className="px-4 py-3 text-gray-600">{formatDate(inc.date)}</td>
-                    <td className="px-4 py-3 text-right text-green-700 font-medium">{inc.amount.toLocaleString('ru')}</td>
+              {(() => {
+                // Группируем приходы по сотрудникам
+                const groupedByEmployee: { [key: string]: { employee: any; totalAmount: number; records: IncomeType[] } } = {};
+                
+                periodIncome.forEach(inc => {
+                  const emp = employees.find(e => e.id === inc.employeeId);
+                  if (!emp) return;
+                  
+                  if (!groupedByEmployee[inc.employeeId]) {
+                    groupedByEmployee[inc.employeeId] = { employee: emp, totalAmount: 0, records: [] };
+                  }
+                  
+                  groupedByEmployee[inc.employeeId].totalAmount += inc.amount;
+                  groupedByEmployee[inc.employeeId].records.push(inc);
+                });
+                
+                return Object.values(groupedByEmployee).map(({ employee, totalAmount, records }) => (
+                  <tr key={employee.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-3 font-medium text-gray-800">{employee.fullName}</td>
+                    <td className="px-4 py-3 text-gray-600">{records.length > 0 ? formatDate(records[records.length - 1].date) : '—'}</td>
+                    <td className="px-4 py-3 text-right text-green-700 font-medium">{totalAmount.toLocaleString('ru')}</td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-2">
                         <button 
-                          onClick={() => handleOpenIncomeModal(emp.id)} 
+                          onClick={() => handleOpenIncomeModal(employee.id)} 
                           className="p-1 text-gray-600 hover:text-green-600 transition" 
                           title="Внести приход"
                         >
                           📩
                         </button>
-                        <button onClick={() => handleOpenModal(inc)} className="p-1 text-gray-600 hover:text-green-600 transition" title="Редактировать">✏️</button>
-                        <button onClick={() => handleDelete(inc.id)} className="p-1 text-gray-600 hover:text-red-600 transition" title="Удалить">🗑️</button>
+                        <button onClick={() => handleOpenModal(records[0])} className="p-1 text-gray-600 hover:text-green-600 transition" title="Редактировать">✏️</button>
+                        <button onClick={() => records.forEach(r => handleDelete(r.id))} className="p-1 text-gray-600 hover:text-red-600 transition" title="Удалить">🗑️</button>
                       </div>
                     </td>
                   </tr>
-                ); 
-              })}
+                ));
+              })()}
             </tbody>
           </table>
         </div>
