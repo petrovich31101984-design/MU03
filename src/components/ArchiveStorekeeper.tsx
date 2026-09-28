@@ -154,7 +154,7 @@ export default function ArchiveStorekeeper() {
                               <tr key={index} className="hover:bg-gray-50">
                                 <td className="px-3 py-2 font-medium text-gray-800">{item.name}</td>
                                 <td className="px-3 py-2 text-center">
-                                  <span className={`text-xs px-2 py-0.5 rounded-full ${item.type === 'Лекарство ПКУ' ? 'bg-red-100 text-red-700 font-bold' : item.type === 'Лекарство' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'}`}>{item.type}</span>
+                                  <span className={`text-xs px-2 py-0.5 rounded-full ${item.type === 'Лекарство ПКУ' ? 'bg-red-100 text-red-700 font-bold' : item.type === 'Лекарство' ? 'bg-purple-100 text-purple-700' : 'bg-green-100 text-green-700'}`}>{item.type === 'Лекарство ПКУ' ? '💉 ЛС пку' : item.type}</span>
                                 </td>
                                 <td className="px-3 py-2 text-center text-gray-700">{item.quantity}</td>
                               </tr>
