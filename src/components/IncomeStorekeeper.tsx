@@ -195,9 +195,8 @@ export default function IncomeStorekeeper() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+        <div className="p-4 border-b border-gray-200">
           <h3 className="font-semibold text-gray-800">Приходы за период: {getPeriodLabel()}</h3>
-          <button onClick={() => handleOpenModal()} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm font-medium">+ Добавить приход</button>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -205,7 +204,7 @@ export default function IncomeStorekeeper() {
               <tr className="bg-gray-50 text-left">
                 <th className="px-4 py-3 font-medium text-gray-600">ФИО</th>
                 <th className="px-4 py-3 font-medium text-gray-600">Дата внесения</th>
-                <th className="px-4 py-3 font-medium text-gray-600 text-right">Сумма (₽)</th>
+                <th className="px-4 py-3 font-medium text-gray-600 text-right">Приход в отчетном месяце</th>
                 <th className="px-4 py-3 font-medium text-gray-600 text-center">Действия</th>
               </tr>
             </thead>
