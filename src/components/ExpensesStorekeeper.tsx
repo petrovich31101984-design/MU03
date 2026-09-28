@@ -54,7 +54,7 @@ export default function ExpensesStorekeeper() {
       ); })}
       {previewSheet && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[95vh] flex flex-col overflow-hidden">
+          <div className="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[95vh] flex flex-col overflow-hidden">
             {/* Шапка превью */}
             <div className="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-3">
@@ -70,35 +70,22 @@ export default function ExpensesStorekeeper() {
               </div>
             </div>
 
-            {/* Область превью — имитация листа Excel */}
+            {/* Область превью */}
             <div className="flex-1 overflow-auto bg-gray-100 p-6">
-              <div className="bg-white shadow-lg border border-gray-300 rounded mx-auto" style={{ maxWidth: '900px', fontFamily: 'Calibri, Arial, sans-serif' }}>
-                {/* Имитация панели вкладок Excel */}
-                <div className="bg-gray-200 border-b border-gray-300 px-2 py-1 flex items-center gap-1 text-xs">
-                  <div className="bg-white border border-gray-300 border-b-white px-3 py-1 rounded-t font-medium text-gray-700">Лист расхода #{previewSheet.id}</div>
-                  <div className="bg-gray-100 border border-transparent px-3 py-1 text-gray-500 hover:bg-gray-50">Лист 2</div>
-                  <div className="bg-gray-100 border border-transparent px-3 py-1 text-gray-500 hover:bg-gray-50">+</div>
-                </div>
-
-                {/* Имитация строки формул Excel */}
-                <div className="bg-gray-50 border-b border-gray-300 px-2 py-1 flex items-center gap-2 text-xs">
-                  <span className="bg-white border border-gray-300 px-2 py-0.5 font-mono text-gray-600 w-12 text-center">A1</span>
-                  <span className="bg-white border border-gray-300 px-2 py-0.5 flex-1 font-mono text-gray-500">fx</span>
-                </div>
-
+              <div className="bg-white shadow-lg border border-gray-300 rounded mx-auto" style={{ maxWidth: '750px', fontFamily: 'Calibri, Arial, sans-serif' }}>
                 {/* Содержимое документа */}
                 <div className="p-8">
                   {/* Заголовок документа */}
                   <table className="w-full border-collapse mb-4">
                     <tbody>
                       <tr>
-                        <td colSpan={5} className="text-center text-xl font-bold py-3 border-b-2 border-gray-800 text-gray-800">
-                          ЛИСТ РАСХОДА № {previewSheet.id}
+                        <td colSpan={4} className="text-center text-xl font-bold py-3 border-b-2 border-gray-800 text-gray-800">
+                          ЛИСТ РАСХОДА
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={5} className="text-center text-sm text-gray-600 py-1">
-                          от {previewSheet.date}
+                        <td colSpan={4} className="text-center text-sm text-gray-600 py-1">
+                          Дата составления: {previewSheet.date}
                         </td>
                       </tr>
                     </tbody>
@@ -108,32 +95,22 @@ export default function ExpensesStorekeeper() {
                   <table className="w-full border-collapse mb-4 text-sm">
                     <tbody>
                       <tr className="bg-green-50">
-                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100 w-1/3">Сотрудник:</td>
-                        <td className="border border-gray-400 px-3 py-2" colSpan={4}>{previewSheet.employee}</td>
+                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100 w-1/3">ФИО сотрудника:</td>
+                        <td className="border border-gray-400 px-3 py-2">{formatPatientName(previewSheet.employee)}</td>
                       </tr>
                       <tr>
-                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100">Пациент:</td>
-                        <td className="border border-gray-400 px-3 py-2" colSpan={2}>{previewSheet.patient}</td>
-                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100 w-1/5">Дата рождения:</td>
-                        <td className="border border-gray-400 px-3 py-2">{previewSheet.birthDate}</td>
-                      </tr>
-                      <tr className="bg-green-50">
-                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100">Категория выезда:</td>
-                        <td className="border border-gray-400 px-3 py-2" colSpan={2}>{previewSheet.visitCategory}</td>
-                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100">Название терапии:</td>
-                        <td className="border border-gray-400 px-3 py-2">{previewSheet.therapyName}</td>
-                      </tr>
-                      <tr>
-                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100">Стоимость терапии:</td>
-                        <td className="border border-gray-400 px-3 py-2 font-bold text-green-700" colSpan={4}>{previewSheet.therapyCost.toLocaleString('ru')} ₽</td>
+                        <td className="border border-gray-400 px-3 py-2 font-bold bg-green-100">ФИО пациента:</td>
+                        <td className="border border-gray-400 px-3 py-2">{formatPatientName(previewSheet.patient)}</td>
                       </tr>
                     </tbody>
                   </table>
 
                   {/* Заголовок таблицы */}
-                  <div className="text-sm font-bold text-gray-700 mb-2">Препараты и материалы:</div>
+                  <div className="text-sm font-bold text-gray-700 mb-2">
+                    Препараты и материалы{typeFilter !== 'all' ? ` (тип: ${typeFilter})` : ''}:
+                  </div>
 
-                  {/* Таблица препаратов — имитация Excel */}
+                  {/* Таблица препаратов */}
                   <table className="w-full border-collapse text-sm">
                     <thead>
                       <tr className="bg-gray-700 text-white">
@@ -141,79 +118,41 @@ export default function ExpensesStorekeeper() {
                         <th className="border border-gray-700 px-3 py-2 text-left">Наименование</th>
                         <th className="border border-gray-700 px-3 py-2 text-center w-32">Тип</th>
                         <th className="border border-gray-700 px-3 py-2 text-center w-20">Кол-во</th>
-                        <th className="border border-gray-700 px-3 py-2 text-right w-28">Цена за ед. (₽)</th>
-                        <th className="border border-gray-700 px-3 py-2 text-right w-28">Сумма (₽)</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {[...previewSheet.items].sort((a: any, b: any) => {
-                        if (a.type === 'Лекарство ПКУ' && b.type !== 'Лекарство ПКУ') return -1;
-                        if (a.type !== 'Лекарство ПКУ' && b.type === 'Лекарство ПКУ') return 1;
-                        return 0;
-                      }).map((item: any, index: number) => (
-                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="border border-gray-300 px-3 py-2 text-center">{index + 1}</td>
-                          <td className="border border-gray-300 px-3 py-2 font-medium">{item.name}</td>
-                          <td className="border border-gray-300 px-3 py-2 text-center">
-                            <span className={
-                              item.type === 'Лекарство ПКУ' ? 'text-red-700 font-bold' :
-                              item.type === 'Лекарство' ? 'text-purple-700' : 'text-green-700'
-                            }>{item.type}</span>
-                          </td>
-                          <td className="border border-gray-300 px-3 py-2 text-center">{item.quantity}</td>
-                          <td className="border border-gray-300 px-3 py-2 text-right">{item.unitPrice.toLocaleString('ru')}</td>
-                          <td className="border border-gray-300 px-3 py-2 text-right font-medium">{item.sum.toLocaleString('ru')}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                    <tfoot>
-                      <tr className="bg-green-100 font-bold">
-                        <td className="border border-gray-700 px-3 py-2" colSpan={5}>ИТОГО:</td>
-                        <td className="border border-gray-700 px-3 py-2 text-right text-green-800">
-                          {previewSheet.items.reduce((s: number, i: any) => s + i.sum, 0).toLocaleString('ru')} ₽
-                        </td>
-                      </tr>
-                    </tfoot>
-                  </table>
-
-                  {/* Блок подписей */}
-                  <table className="w-full border-collapse mt-6 text-sm">
-                    <tbody>
-                      <tr>
-                        <td className="border border-gray-400 px-3 py-3 font-bold bg-green-100 w-1/3">Лимит 6% от стоимости терапии:</td>
-                        <td className="border border-gray-400 px-3 py-3 font-medium">{(previewSheet.therapyCost * 0.06).toLocaleString('ru')} ₽</td>
-                      </tr>
-                      <tr>
-                        <td className="border border-gray-400 px-3 py-3 font-bold bg-green-100">Итого по препаратам:</td>
-                        <td className={`border border-gray-400 px-3 py-3 font-bold ${previewSheet.items.reduce((s: number, i: any) => s + i.sum, 0) >= previewSheet.therapyCost * 0.06 ? 'text-red-700' : 'text-green-700'}`}>
-                          {previewSheet.items.reduce((s: number, i: any) => s + i.sum, 0).toLocaleString('ru')} ₽
-                          {previewSheet.items.reduce((s: number, i: any) => s + i.sum, 0) >= previewSheet.therapyCost * 0.06 && ' ⚠️ ПРЕВЫШЕНИЕ'}
-                        </td>
-                      </tr>
+                      {[...previewSheet.items]
+                        .filter((item: any) => typeFilter === 'all' || item.type === typeFilter)
+                        .sort((a: any, b: any) => {
+                          if (a.type === 'Лекарство ПКУ' && b.type !== 'Лекарство ПКУ') return -1;
+                          if (a.type !== 'Лекарство ПКУ' && b.type === 'Лекарство ПКУ') return 1;
+                          return 0;
+                        })
+                        .map((item: any, index: number) => (
+                          <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="border border-gray-300 px-3 py-2 text-center">{index + 1}</td>
+                            <td className="border border-gray-300 px-3 py-2 font-medium">{item.name}</td>
+                            <td className="border border-gray-300 px-3 py-2 text-center">
+                              <span className={
+                                item.type === 'Лекарство ПКУ' ? 'text-red-700 font-bold' :
+                                item.type === 'Лекарство' ? 'text-purple-700' : 'text-green-700'
+                              }>{item.type}</span>
+                            </td>
+                            <td className="border border-gray-300 px-3 py-2 text-center">{item.quantity}</td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
 
-                  {/* Подписи */}
-                  <div className="mt-8 grid grid-cols-2 gap-8 text-sm">
-                    <div>
-                      <div className="border-b border-gray-600 mb-1 h-8"></div>
-                      <div className="text-xs text-gray-600">Подпись кладовщика / ФИО</div>
-                    </div>
-                    <div>
-                      <div className="border-b border-gray-600 mb-1 h-8"></div>
-                      <div className="text-xs text-gray-600">Подпись руководителя / ФИО</div>
-                    </div>
+                  {/* Подпись кладовщика */}
+                  <div className="mt-8 text-sm">
+                    <div className="border-b border-gray-600 mb-1 h-8 w-1/2"></div>
+                    <div className="text-xs text-gray-600">Подпись кладовщика / ФИО</div>
                   </div>
 
                   <div className="mt-6 text-xs text-gray-500 text-center">
                     Документ сформирован автоматически в системе «МедУчёт v.0.2» • {new Date().toLocaleString('ru-RU')}
                   </div>
-                </div>
-
-                {/* Имитация строки состояния Excel */}
-                <div className="bg-green-700 text-white px-3 py-1 text-xs flex justify-between">
-                  <span>Готово</span>
-                  <span>Позиций: {previewSheet.items.length} • Итого: {previewSheet.items.reduce((s: number, i: any) => s + i.sum, 0).toLocaleString('ru')} ₽</span>
                 </div>
               </div>
             </div>
