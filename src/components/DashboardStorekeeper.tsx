@@ -1,11 +1,14 @@
 import { useStore } from '../store/useStore';
+
 interface DashboardProps { onNavigate?: (page: string) => void; }
+
 export default function DashboardStorekeeper({ onNavigate }: DashboardProps) {
   const nomenclature = useStore(s => s.nomenclature);
   const employees = useStore(s => s.employees);
   const activeEmployees = employees.filter(e => e.status === 'active');
   const totalItems = nomenclature.length;
   const totalEmployees = activeEmployees.length;
+
   return (
     <div className="space-y-6">
       <div><h2 className="text-lg font-semibold text-gray-800 capitalize">{new Date().toLocaleDateString('ru-RU', { month: 'long' })} {new Date().getFullYear()}</h2><p className="text-sm text-gray-500 mt-1">Панель управления складом</p></div>
