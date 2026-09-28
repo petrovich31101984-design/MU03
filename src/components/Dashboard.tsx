@@ -29,7 +29,11 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
   activeEmployees.forEach(emp => {
     nomenclature.forEach(nom => {
       const stock = getEmployeeStockAtDate(emp.id, nom.id, currentMonthStart);
-      if (stock > 0) { totalStockValue += stock * getCurrentPrice(nom.id); }
+      if (stock > 0) { 
+        const isPKU = nom.category === 'medicine_pku';
+        const unitPrice = isPKU && nom.packageQuantity ? (nom.pricePerPackage || 0) / nom.packageQuantity : getCurrentPrice(nom.id);
+        totalStockValue += stock * unitPrice; 
+      }
     });
   });
 
@@ -114,7 +118,18 @@ export default function Dashboard({ onNavigate }: DashboardProps) {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="p-4 border-b border-gray-200 flex items-center justify-between"><h3 className="font-semibold text-gray-800">Сотрудники — общая сводка</h3><span className="text-sm text-gray-500">{activeEmployees.length} активных</span></div>
-        <div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="bg-gray-50 text-left"><th className="px-4 py-3 font-medium text-gray-600">Сотрудник</th><th className="px-4 py-3 font-medium text-gray-600 text-center">Статус</th><th className="px-4 py-3 font-medium text-gray-600 text-right"><div>Приход (₽)</div><div className="text-xs font-normal text-gray-400">за {previousMonthLabel}</div></th><th className="px-4 py-3 font-medium text-gray-600 text-right"><div>Расход (₽)</div><div className="text-xs font-normal text-gray-400">за {previousMonthLabel}</div></th><th className="px-4 py-3 font-medium text-gray-600 text-right"><div>Баланс (₽)</div><div className="text-xs font-normal text-gray-400">приход − расход</div></th><th className="px-4 py-3 font-medium text-gray-600 text-center">Листов расхода</th></tr></thead><tbody className="divide-y divide-gray-100">{employeeSummary.filter(row => row.emp.status === 'active').slice(0, 4).map(row => { const balance = row.income - row.expense; return (<tr key={row.emp.id} className={`hover:bg-gray-50 ${balance < 0 ? 'bg-red-50' : ''}`}><td className="px-4 py-3"><div className="font-medium text-gray-800">{row.emp.fullName}</div><div className="text-xs text-gray-500">№{row.emp.personalNumber}</div></td><td className="px-4 py-3 text-center"><span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 border border-green-200">Активен</span></td><td className="px-4 py-3 text-right text-green-700 font-medium">{row.income.toLocaleString('ru')}</td><td className="px-4 py-3 text-right text-orange-700 font-medium">{row.expense.toLocaleString('ru')}</td><td className={`px-4 py-3 text-right font-bold ${balance < 0 ? 'text-red-600' : 'text-blue-700'}`}>{balance >= 0 ? '+' : ''}{balance.toLocaleString('ru')}</td><td className="px-4 py-3 text-center font-medium text-purple-700">{useStore.getState().getEmployeePatients(row.emp.id).length}</td></tr>); })}</tbody></table></div>
+        <div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="bg-gray-50 text-left"><th className="px-4 py-3 font-medium text-gray-600">Сотрудник</th><th className="px-4 py-3 font-medium text-gray-600 text-center">Статус</th><th className="px-4 py-3 font-medium text-gray-600 text-right"><div>Приход (₽)</div><div className="text-xs font-normal text-gray-400">за {previousMonthLabel}</div></th><th className="px-4 py-3 font-medium text-gray-600 text-right"><div>Расход (₽)</div><div className="text-xs font-normal text-gray-400">за {previousMonthLabel}</div></th><th className="px-4 py-3 font-medium text-gray-600 text-right"><div>Остаток (₽)</div><div className="text-xs font-normal text-gray-400">стоимость номенклатуры</div></th><th className="px-4 py-3 font-medium text-gray-600 text-center">Листов расхода</th></tr></thead><tbody className="divide-y divide-gray-100">{employeeSummary.filter(row => row.emp.status === 'active').slice(0, 4).map(row => { 
+          let stockValue = 0;
+          nomenclature.forEach(nom => {
+            const stock = getEmployeeStock(row.emp.id, nom.id);
+            if (stock > 0) {
+              const isPKU = nom.category === 'medicine_pku';
+              const unitPrice = isPKU && nom.packageQuantity ? (nom.pricePerPackage || 0) / nom.packageQuantity : getCurrentPrice(nom.id);
+              stockValue += stock * unitPrice;
+            }
+          });
+          return (<tr key={row.emp.id} className="hover:bg-gray-50"><td className="px-4 py-3"><div className="font-medium text-gray-800">{row.emp.fullName}</div><div className="text-xs text-gray-500">№{row.emp.personalNumber}</div></td><td className="px-4 py-3 text-center"><span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 border border-green-200">Активен</span></td><td className="px-4 py-3 text-right text-green-700 font-medium">{row.income.toLocaleString('ru')}</td><td className="px-4 py-3 text-right text-orange-700 font-medium">{row.expense.toLocaleString('ru')}</td><td className="px-4 py-3 text-right font-bold text-blue-700">{stockValue.toLocaleString('ru')}</td><td className="px-4 py-3 text-center font-medium text-purple-700">{useStore.getState().getEmployeePatients(row.emp.id).length}</td></tr>); 
+        })}</tbody></table></div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
