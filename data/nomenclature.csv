@@ -1,0 +1,21 @@
+id,name,category,unit,active,packageQuantity,pricePerPackage
+nom_1,Анальгин 50% 2мл,medicine,ampoule,TRUE,10,450
+nom_2,Дексаметазон 4мг/мл,medicine,ampoule,TRUE,10,850
+nom_3,Преднизолон 30мг/мл,medicine,ampoule,TRUE,10,1200
+nom_4,Адреналин 0.1% 1мл,medicine,ampoule,TRUE,10,1800
+nom_5,Фуросемид 10мг/мл,medicine,ampoule,TRUE,10,350
+nom_6,Димедрол 1% 1мл,medicine,ampoule,TRUE,10,550
+nom_7,Натрия хлорид 0.9% 400мл,medicine,flacon,TRUE,1,65
+nom_8,Реополиглюкин 400мл,medicine,flacon,TRUE,1,320
+nom_9,Нитроглицерин 0.5мг,medicine,tablet,TRUE,20,500
+nom_10,Каптоприл 25мг,medicine,tablet,TRUE,20,900
+nom_11,Морфин 1% 1мл,medicine_pku,ampoule,TRUE,5,2500
+nom_12,Промедол 2% 1мл,medicine_pku,ampoule,TRUE,5,1800
+nom_13,Фентанил 0.005% 2мл,medicine_pku,ampoule,TRUE,5,3200
+nom_21,Шприц 5мл,consumable,piece,TRUE,100,1200
+nom_22,Шприц 10мл,consumable,piece,TRUE,100,1500
+nom_23,Шприц 20мл,consumable,piece,TRUE,100,1800
+nom_24,Система для в/в вливания,consumable,piece,TRUE,50,2250
+nom_25,Катетер венозный 18G,consumable,piece,TRUE,50,4250
+nom_28,Салфетки спиртовые,consumable,piece,TRUE,100,500
+nom_29,Перчатки нитриловые M,consumable,piece,TRUE,100,1500

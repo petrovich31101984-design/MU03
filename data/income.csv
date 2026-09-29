@@ -1,0 +1,6 @@
+id,employeeId,amount,period,shifts,date,createdBy
+inc_1,emp_1,150000,2026-08,20,2026-08-01,admin
+inc_2,emp_2,145000,2026-08,19,2026-08-01,admin
+inc_3,emp_3,160000,2026-08,21,2026-08-01,admin
+inc_4,emp_4,135000,2026-08,18,2026-08-01,admin
+inc_5,emp_5,155000,2026-08,20,2026-08-01,admin

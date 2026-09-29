@@ -1,0 +1,11 @@
+id,employeeId,patientId,nomenclatureId,quantity,visitDate,entryDate,offline
+exp_1,emp_1,pat_1,nom_1,2,2026-08-15,2026-08-15T10:30,FALSE
+exp_2,emp_1,pat_1,nom_2,1,2026-08-15,2026-08-15T10:35,FALSE
+exp_3,emp_2,pat_2,nom_3,3,2026-08-14,2026-08-14T14:20,FALSE
+exp_4,emp_2,pat_2,nom_21,4,2026-08-14,2026-08-14T14:25,FALSE
+exp_5,emp_3,pat_3,nom_4,2,2026-08-13,2026-08-13T09:15,FALSE
+exp_6,emp_3,pat_3,nom_22,3,2026-08-13,2026-08-13T09:20,FALSE
+exp_7,emp_1,pat_4,nom_5,1,2026-08-12,2026-08-12T16:45,FALSE
+exp_8,emp_1,pat_4,nom_23,2,2026-08-12,2026-08-12T16:50,FALSE
+exp_9,emp_2,pat_5,nom_6,2,2026-08-11,2026-08-11T11:30,FALSE
+exp_10,emp_2,pat_5,nom_24,1,2026-08-11,2026-08-11T11:35,FALSE
