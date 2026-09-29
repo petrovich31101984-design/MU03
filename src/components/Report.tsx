@@ -67,7 +67,14 @@ export default function Report() {
     const patients = getEmployeePatients(emp.id);
     const expenseCount = patients.filter(p => calculationPeriods.some(period => p.visitDate.startsWith(period))).length;
     let stockValue = 0;
-    nomenclature.forEach(nom => { const stock = getEmployeeStockAtDate(emp.id, nom.id, currentMonthStart); if (stock > 0) stockValue += stock * getCurrentPrice(nom.id); });
+    nomenclature.forEach(nom => { 
+      const stock = getEmployeeStockAtDate(emp.id, nom.id, currentMonthStart); 
+      if (stock > 0) {
+        const isPKU = nom.category === 'medicine_pku';
+        const unitPrice = isPKU && nom.packageQuantity ? (nom.pricePerPackage || 0) / nom.packageQuantity : getCurrentPrice(nom.id);
+        stockValue += stock * unitPrice;
+      }
+    });
     return { emp, income, expense, expenseCount, stockValue };
   });
 

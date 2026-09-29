@@ -5,7 +5,6 @@ export default function Expenses() {
   const addNotification = useStore(s => s.addNotification);
   const openExpenseSheetId = useStore(s => s.openExpenseSheetId);
   const setOpenExpenseSheetId = useStore(s => s.setOpenExpenseSheetId);
-  const totalExpenseAmount = 385000;
   const [editingSheet, setEditingSheet] = useState<any>(null);
   const [editData, setEditData] = useState<any>(null);
   const [archivedSheets, setArchivedSheets] = useState<number[]>([]);
@@ -55,7 +54,7 @@ export default function Expenses() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 relative overflow-hidden"><div className="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div><div className="pl-2"><p className="text-sm text-gray-500">Общая сумма расхода за месяц</p><p className="text-2xl font-bold text-red-700 mt-1">{totalExpenseAmount.toLocaleString('ru')} ₽</p><p className="text-xs text-gray-400 mt-1">за август 2026</p></div></div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 relative overflow-hidden"><div className="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500"></div><div className="pl-2"><p className="text-sm text-gray-500">Общая сумма расхода за месяц</p><p className="text-2xl font-bold text-red-700 mt-1">{expenseSheets.reduce((sum: number, sheet: any) => sum + sheet.items.reduce((s: number, item: any) => s + item.sum, 0), 0).toLocaleString('ru')} ₽</p><p className="text-xs text-gray-400 mt-1">за август 2026</p></div></div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 relative overflow-hidden"><div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500"></div><div className="pl-2"><p className="text-sm text-gray-500">Листов расхода за месяц</p><p className="text-2xl font-bold text-blue-700 mt-1">{expenseSheets.length}</p><p className="text-xs text-gray-400 mt-1">за август 2026</p></div></div>
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5 relative overflow-hidden"><div className="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-500"></div><div className="pl-2"><p className="text-sm text-gray-500">Превышений лимита 6%</p><p className="text-2xl font-bold text-amber-700 mt-1">{expenseSheets.filter(s => { const total = s.items.reduce((sum: number, item: any) => sum + item.sum, 0); return total >= s.therapyCost * 0.06; }).length}</p><p className="text-xs text-gray-400 mt-1">уведомления отправлены</p></div></div>
       </div>
