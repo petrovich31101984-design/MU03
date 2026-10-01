@@ -57,9 +57,9 @@ export default function Employees() {
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         {showArchived && (<div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-sm text-amber-800">📁 Отображаются архивные сотрудники</div>)}
-        <div className="overflow-x-auto" style={{ maxHeight: '600px', overflowY: 'auto' }}>
+        <div className="overflow-x-auto overflow-y-auto" style={{ height: '600px' }}>
           <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-gray-50 z-10">
+            <thead className="sticky top-0 bg-gray-50 z-10 shadow-sm">
               <tr className="text-left">
                 <th className="px-4 py-3 font-medium text-gray-600">№</th>
                 <th className="px-4 py-3 font-medium text-gray-600">ФИО</th>
