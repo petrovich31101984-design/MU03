@@ -1,0 +1,17 @@
+id,employeeId,nomenclatureId,quantity,date,createdBy
+stock_1,emp_1,nom_1,20,2024-01-01,admin
+stock_2,emp_1,nom_2,15,2024-01-01,admin
+stock_3,emp_1,nom_3,10,2024-01-01,admin
+stock_4,emp_1,nom_21,50,2024-01-01,admin
+stock_5,emp_2,nom_1,25,2024-01-01,admin
+stock_6,emp_2,nom_2,20,2024-01-01,admin
+stock_7,emp_2,nom_22,40,2024-01-01,admin
+stock_8,emp_3,nom_1,18,2024-01-01,admin
+stock_9,emp_3,nom_3,12,2024-01-01,admin
+stock_10,emp_3,nom_23,30,2024-01-01,admin
+stock_11,emp_4,nom_1,22,2024-01-01,admin
+stock_12,emp_4,nom_2,17,2024-01-01,admin
+stock_13,emp_4,nom_24,25,2024-01-01,admin
+stock_14,emp_5,nom_1,30,2024-01-01,admin
+stock_15,emp_5,nom_2,25,2024-01-01,admin
+stock_16,emp_5,nom_25,20,2024-01-01,admin
