@@ -1,0 +1,1 @@
+export default function Income() { return <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"><h2 className="text-xl font-bold text-gray-800 mb-4">Приход к сотруднику</h2><p className="text-gray-500">Раздел в разработке</p></div>; }

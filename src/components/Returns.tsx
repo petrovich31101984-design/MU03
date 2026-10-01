@@ -1,0 +1,1 @@
+export default function Returns() { return <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"><h2 className="text-xl font-bold text-gray-800 mb-4">Возвраты</h2><p className="text-gray-500">Раздел в разработке</p></div>; }
