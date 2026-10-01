@@ -119,7 +119,7 @@ export async function addEmployee(employee: Omit<Employee, 'id'>): Promise<{ suc
       },
       body: JSON.stringify({
         type: 'addEmployee',
-        newEmployee: newEmployee
+         newEmployee
       })
     });
 
