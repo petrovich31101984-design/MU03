@@ -1,0 +1,11 @@
+id,employeeId,nomenclatureId,quantity,date,corrected,correctedBy,newQuantity,reason,confirmed
+ret_1,emp_1,nom_1,5,2026-01-10,FALSE,,,Вышел срок годности,FALSE
+ret_2,emp_1,nom_24,2,2026-01-10,TRUE,admin,1,Нарушение упаковки,TRUE
+ret_3,emp_1,nom_21,8,2026-01-10,FALSE,,,Другая причина,FALSE
+ret_4,emp_3,nom_2,3,2026-01-12,TRUE,storekeeper,2,Вышел срок годности,TRUE
+ret_5,emp_3,nom_29,15,2026-01-12,FALSE,,,Нарушение упаковки,FALSE
+ret_6,emp_5,nom_21,10,2026-01-14,FALSE,,,Другая причина,FALSE
+ret_7,emp_5,nom_7,4,2026-01-14,TRUE,admin,3,Вышел срок годности,TRUE
+ret_8,emp_5,nom_25,6,2026-01-14,FALSE,,,Поломка оборудования,FALSE
+ret_9,emp_4,nom_25,4,2026-01-16,FALSE,,,Поломка оборудования,FALSE
+ret_10,emp_4,nom_28,20,2026-01-16,FALSE,,,Вышел срок годности,FALSE
