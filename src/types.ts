@@ -1,5 +1,7 @@
 export type UserRole = 'admin' | 'storekeeper';
 export type EmployeeStatus = 'active' | 'inactive' | 'blocked' | 'fired';
+export type Category = 'medicine' | 'medicine_pku' | 'equipment' | 'consumable';
+export type Unit = 'ampoule' | 'tablet' | 'flacon' | 'piece';
 
 export interface Employee {
   id: string;

@@ -1,1 +1,361 @@
-export default function ReturnsStorekeeper() { return <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"><h2 className="text-xl font-bold text-gray-800 mb-4">Возвраты</h2><p className="text-gray-500">Раздел в разработке</p></div>; }
+import { useState } from 'react';
+import { useStore } from '../store/useStore';
+import { UNIT_LABELS, ReturnOperation } from '../types';
+import { formatDate } from '../utils/dateFormat';
+
+interface ReturnSheet {
+  id: string;
+  employeeId: string;
+  date: string;
+  items: ReturnOperation[];
+}
+
+export default function ReturnsStorekeeper() {
+  const returns = useStore(s => s.returns);
+  const employees = useStore(s => s.employees);
+  const nomenclature = useStore(s => s.nomenclature);
+  const correctReturn = useStore(s => s.correctReturn);
+  const addArchivedReturns = useStore(s => s.addArchivedReturns);
+
+  const [filter, setFilter] = useState<'all' | 'pending' | 'corrected'>('all');
+  const [correctingId, setCorrectingId] = useState<string | null>(null);
+  const [newQuantity, setNewQuantity] = useState('');
+  const [archivedSheets, setArchivedSheets] = useState<Set<string>>(new Set());
+  const [editingReturn, setEditingReturn] = useState<ReturnOperation | null>(null);
+  const [editQuantity, setEditQuantity] = useState('');
+  const [editReason, setEditReason] = useState('');
+  
+  const confirmReturn = useStore(s => s.confirmReturn);
+  const updateReturn = useStore(s => s.updateReturn);
+
+  const getEmployeeName = (id: string) => employees.find(e => e.id === id)?.fullName || id;
+  
+  const formatEmployeeName = (fullName: string) => {
+    const parts = fullName.split(' ');
+    if (parts.length >= 3) {
+      return `${parts[0]} ${parts[1][0]}.${parts[2][0]}.`;
+    }
+    return fullName;
+  };
+  const getNomenclatureName = (id: string) => nomenclature.find(n => n.id === id)?.name || id;
+  const getNomenclatureUnit = (id: string) => nomenclature.find(n => n.id === id)?.unit;
+
+  const groupReturns = (returnsList: ReturnOperation[]): ReturnSheet[] => {
+    const groups: { [key: string]: ReturnSheet } = {};
+    
+    returnsList.forEach(ret => {
+      const key = `${ret.employeeId}_${ret.date}`;
+      if (!groups[key]) {
+        groups[key] = {
+          id: key,
+          employeeId: ret.employeeId,
+          date: ret.date,
+          items: []
+        };
+      }
+      groups[key].items.push(ret);
+    });
+
+    return Object.values(groups).sort((a, b) => b.date.localeCompare(a.date));
+  };
+
+  const filteredReturns = returns.filter(r => {
+    if (filter === 'pending') return !r.corrected;
+    if (filter === 'corrected') return r.corrected;
+    return true;
+  });
+
+  const allSheets = groupReturns(filteredReturns);
+  const sheets = allSheets.filter(sheet => !archivedSheets.has(sheet.id));
+
+  const handleCorrect = (id: string) => {
+    if (!newQuantity) return;
+    correctReturn(id, Number(newQuantity), 'storekeeper');
+    setCorrectingId(null);
+    setNewQuantity('');
+  };
+
+  const handleArchiveSheet = (sheetId: string) => {
+    const sheet = allSheets.find(s => s.id === sheetId);
+    if (sheet) {
+      addArchivedReturns([sheet]);
+    }
+    setArchivedSheets(prev => new Set(prev).add(sheetId));
+  };
+
+  const handleConfirm = (id: string) => {
+    confirmReturn(id, 'storekeeper');
+  };
+
+  const handleEdit = (ret: ReturnOperation) => {
+    setEditingReturn(ret);
+    setEditQuantity(String(ret.quantity));
+    setEditReason(ret.reason || '');
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingReturn) return;
+    updateReturn(editingReturn.id, {
+      quantity: Number(editQuantity),
+      reason: editReason,
+    }, 'storekeeper');
+    setEditingReturn(null);
+    setEditQuantity('');
+    setEditReason('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingReturn(null);
+    setEditQuantity('');
+    setEditReason('');
+  };
+
+  const pendingCount = returns.filter(r => !r.corrected).length;
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col md:flex-row gap-4">
+        <div className="flex gap-2">
+          <button
+            onClick={() => setFilter('all')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              filter === 'all' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Все листы ({sheets.length})
+          </button>
+          <button
+            onClick={() => setFilter('pending')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              filter === 'pending' ? 'bg-amber-100 text-amber-700 border border-amber-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Ожидают ({pendingCount})
+          </button>
+          <button
+            onClick={() => setFilter('corrected')}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${
+              filter === 'corrected' ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            }`}
+          >
+            Скорректированные ({returns.filter(r => r.corrected).length})
+          </button>
+        </div>
+      </div>
+
+      {sheets.map(sheet => {
+        const hasUnconfirmed = sheet.items.some(item => !item.confirmed);
+        
+        return (
+          <div key={sheet.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200" style={{ backgroundColor: '#AFEEEE' }}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-800">
+                      Лист возврата от {formatDate(sheet.date)}
+                    </h3>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Сотрудник: <span className="font-medium">{formatEmployeeName(getEmployeeName(sheet.employeeId))}</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm font-medium ${
+                    hasUnconfirmed ? 'text-amber-700' : 'text-green-700'
+                  }`}>
+                    {hasUnconfirmed ? '⏳ Ожидает подтверждения' : '✅ Подтверждён'}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    {sheet.items.length} {sheet.items.length === 1 ? 'позиция' : 'позиций'}
+                  </span>
+                  <button
+                    onClick={() => handleArchiveSheet(sheet.id)}
+                    disabled={hasUnconfirmed}
+                    className={`px-3 py-1.5 rounded-lg text-xs transition flex items-center gap-1 ${
+                      hasUnconfirmed
+                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                        : 'bg-gray-600 text-white hover:bg-gray-700'
+                    }`}
+                    title={hasUnconfirmed ? 'Нельзя отправить в архив: необходимо подтвердить все позиции' : ''}
+                  >
+                    📦 Отправить в архив
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-left border-b border-gray-200">
+                    <th className="px-4 py-3 font-medium text-gray-600">Номенклатура</th>
+                    <th className="px-4 py-3 font-medium text-gray-600">Кол-во</th>
+                    <th className="px-4 py-3 font-medium text-gray-600">Причина возврата</th>
+                    <th className="px-4 py-3 font-medium text-gray-600">Статус</th>
+                    <th className="px-4 py-3 font-medium text-gray-600">Действия</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {sheet.items.map(ret => {
+                    const unit = getNomenclatureUnit(ret.nomenclatureId);
+                    return (
+                      <tr key={ret.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-gray-700">
+                          {getNomenclatureName(ret.nomenclatureId)}
+                          {unit && <span className="text-xs text-gray-400 ml-1">({UNIT_LABELS[unit]})</span>}
+                        </td>
+                        <td className="px-4 py-3">
+                          {correctingId === ret.id ? (
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                value={newQuantity}
+                                onChange={e => setNewQuantity(e.target.value)}
+                                className="w-16 px-2 py-1 border border-green-300 rounded text-center"
+                                autoFocus
+                              />
+                              <button
+                                onClick={() => handleCorrect(ret.id)}
+                                className="p-1 bg-green-100 text-green-700 rounded hover:bg-green-200"
+                              >
+                                ✓
+                              </button>
+                              <button
+                                onClick={() => { setCorrectingId(null); setNewQuantity(''); }}
+                                className="p-1 bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+                              >
+                                ✕
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="font-medium text-gray-800">
+                              {ret.corrected && ret.newQuantity !== undefined ? (
+                                <>
+                                  <span className="text-gray-400 line-through">{ret.quantity}</span>
+                                  {' → '}
+                                  <span className="text-green-700">{ret.newQuantity}</span>
+                                </>
+                              ) : ret.quantity}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-4 py-3 text-gray-700">
+                          <span className={`text-sm ${
+                            ret.reason === 'Вышел срок годности' ? 'text-red-700' :
+                            ret.reason === 'Поломка оборудования' ? 'text-orange-700' :
+                            ret.reason === 'Нарушение упаковки' ? 'text-yellow-700' :
+                            'text-gray-700'
+                          }`}>
+                            {ret.reason || '—'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className={`text-sm ${
+                            ret.confirmed ? 'text-green-700' : 'text-amber-700'
+                          }`}>
+                            {ret.confirmed ? '✓ Подтверждено' : '⏳ Ожидает'}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center gap-2">
+                            {!ret.confirmed && (
+                              <button
+                                onClick={() => handleConfirm(ret.id)}
+                                className="text-green-700 hover:text-green-900 text-lg"
+                                title="Подтвердить позицию"
+                              >
+                                ✓
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleEdit(ret)}
+                              className="text-green-700 hover:text-green-900 text-lg"
+                              title="Изменить количество и причину"
+                            >
+                              ✏️
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+      })}
+
+      {sheets.length === 0 && (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center">
+          <div className="text-4xl mb-2">↩️</div>
+          <p className="text-gray-500">Нет возвратов</p>
+        </div>
+      )}
+
+      {editingReturn && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Изменить позицию возврата</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Количество</label>
+                <input
+                  type="number"
+                  value={editQuantity}
+                  onChange={(e) => setEditQuantity(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                  min="1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Причина возврата</label>
+                <select
+                  value={editReason}
+                  onChange={(e) => setEditReason(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                >
+                  <option value="Вышел срок годности">Вышел срок годности</option>
+                  <option value="Поломка оборудования">Поломка оборудования</option>
+                  <option value="Нарушение упаковки">Нарушение упаковки</option>
+                  <option value="Другая причина">Другая причина</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleCancelEdit}
+                className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition"
+              >
+                Отмена
+              </button>
+              <button
+                onClick={handleSaveEdit}
+                className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+              >
+                Сохранить
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+        <h4 className="font-semibold text-green-800 text-sm mb-2">ℹ️ О возвратах</h4>
+        <ul className="text-sm text-green-700 space-y-1">
+          <li>• Возвраты создаются сотрудниками при возврате лекарств на склад</li>
+          <li>• Возвраты одного сотрудника за один день объединяются в один лист</li>
+          <li>• После возврата остаток сотрудника уменьшается</li>
+          <li>• Каждая позиция должна быть подтверждена перед архивацией</li>
+          <li>• Лист можно отправить в архив только после подтверждения всех позиций</li>
+          <li>• Можно изменить количество и причину возврата</li>
+          <li>• Все изменения записываются в журнал</li>
+        </ul>
+      </div>
+    </div>
+  );
+}

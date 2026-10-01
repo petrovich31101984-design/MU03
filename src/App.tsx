@@ -31,12 +31,10 @@ function App() {
   const loadData = useStore(state => state.loadData);
   const isLoading = useStore(state => state.isLoading);
 
-  // Загружаем данные из Google Sheets при старте приложения
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // Показываем индикатор загрузки, пока данные не загружены
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
@@ -61,14 +59,12 @@ function App() {
     setCurrentPage('dashboard');
   };
 
-  // Если роль не выбрана, показываем экран выбора роли
   if (!userRole) {
     return <RoleSelectionScreen onSelectRole={handleRoleSelect} />;
   }
 
   const renderPage = () => {
     if (userRole === 'admin') {
-      // Приложение руководителя
       switch (currentPage) {
         case 'dashboard': return <Dashboard onNavigate={setCurrentPage} />;
         case 'employees': return <Employees />;
@@ -84,7 +80,6 @@ function App() {
         default: return <Dashboard />;
       }
     } else {
-      // Приложение кладовщика
       switch (currentPage) {
         case 'dashboard': return <DashboardStorekeeper onNavigate={setCurrentPage} />;
         case 'nomenclature': return <NomenclatureStorekeeper />;
